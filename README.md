@@ -1,2 +1,2 @@
 # Aicurate
-Testcases and Scripts Generation
+Testcases and Automation Scripts Generation
