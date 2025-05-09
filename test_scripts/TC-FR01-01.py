@@ -1,1 +1,27 @@
-\nfrom selenium import webdriver\nfrom selenium.webdriver.common.by import By\nfrom selenium.webdriver.chrome.service import Service\nfrom webdriver_manager.chrome import ChromeDriverManager\n\ndef test_customer_interaction_platform():\n    driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()))\n    try:\n        # Step 1: Navigate to the customer interaction platform.\n        driver.get("http://your_application_url/homepage")\n        assert "Homepage - Your App" in driver.title\n\n        # Step 2: Access the customer interaction platform.\n        interaction_button = driver.find_element(By.ID, "interaction_platform")\n        interaction_button.click()\n        assert driver.find_element(By.ID, "interaction_options").is_displayed()\n        print("Customer interaction platform loads successfully.")\n    finally:\n        driver.quit()\n
+from selenium import webdriver
+from selenium.webdriver.common.by import By
+from selenium.webdriver.chrome.service import Service
+from webdriver_manager.chrome import ChromeDriverManager
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.support import expected_conditions as EC
+import time
+def sso_login(url, username, password):
+    driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()))
+    try:
+        driver.get(url)
+        WebDriverWait(driver, 10).until(
+        EC.element_to_be_clickable((By.XPATH, "//button[contains(text(), 'Login with SSO')]"))
+            ).click()
+        # Wait for username input
+        WebDriverWait(driver, 15).until(EC.presence_of_element_located((By.ID, "i0116"))).send_keys(username)
+        driver.find_element(By.ID, "idSIButton9").click()
+        # Wait for password input
+        WebDriverWait(driver, 15).until(EC.presence_of_element_located((By.ID, "i0118"))).send_keys(password)
+        driver.find_element(By.ID, "idSIButton9").click()
+        # Handle persistent login dialog
+        WebDriverWait(driver, 15).until(EC.element_to_be_clickable((By.XPATH, "//input[@value='No']"))).click()
+        print("Login successful.")
+    except Exception as e:
+        print(f"Login failed: {e}")
+    finally:
+        driver.quit()
