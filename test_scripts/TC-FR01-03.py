@@ -1,1 +1,17 @@
-\nfrom selenium import webdriver\nfrom selenium.webdriver.common.by import By\nfrom selenium.webdriver.chrome.service import Service\nfrom webdriver_manager.chrome import ChromeDriverManager\n\ndef test_platform_no_input():\n    driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()))\n    try:\n        # Step 1: Navigate to the customer interaction platform.\n        driver.get("http://your_application_url/homepage")\n        driver.find_element(By.ID, "interaction_platform").click()\n\n        # Step 2: Submit empty input.\n        submit_button = driver.find_element(By.ID, "submit_input")\n        submit_button.click()\n        assert driver.find_element(By.ID, "error_message").is_displayed()\n        print("Error message for empty input is displayed.")\n    finally:\n        driver.quit()\n
+from selenium import webdriver
+from selenium.webdriver.common.by import By
+from selenium.webdriver.chrome.service import Service
+from webdriver_manager.chrome import ChromeDriverManager
+from selenium.webdriver.common.action_chains import ActionChains
+import time
+def test_customer_interaction_timeout():
+    driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()))
+    try:
+        driver.get("http://example.com/customer-interaction")
+        start_btn = driver.find_element(By.ID, "startInteraction")
+        start_btn.click()
+        time.sleep(20)
+        assert driver.find_element(By.ID, "timeoutMessage").is_displayed()
+        print("Timeout message displayed successfully.")
+    finally:
+        driver.quit()
