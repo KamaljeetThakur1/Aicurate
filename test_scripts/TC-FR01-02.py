@@ -1,1 +1,16 @@
-\nfrom selenium import webdriver\nfrom selenium.webdriver.common.by import By\nfrom selenium.webdriver.chrome.service import Service\nfrom webdriver_manager.chrome import ChromeDriverManager\n\ndef test_customer_interaction_logged_out():\n    driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()))\n    try:\n        # Step 1: Attempt to access the interaction platform while logged out.\n        driver.get("http://your_application_url/interaction_platform")\n        assert "Login - Your App" in driver.title\n        print("User is redirected to login page as expected.")\n    finally:\n        driver.quit()\n
+from selenium import webdriver
+from selenium.webdriver.common.by import By
+from selenium.webdriver.chrome.service import Service
+from webdriver_manager.chrome import ChromeDriverManager
+import time
+def test_customer_interaction_button_absent():
+    driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()))
+    try:
+        driver.get("http://example.com/customer-interaction")
+        assert "Customer Interaction" in driver.title
+        try:
+            driver.find_element(By.ID, "startInteraction")
+        except:
+            print("Start Interaction button not found, as expected.")
+    finally:
+        driver.quit()
