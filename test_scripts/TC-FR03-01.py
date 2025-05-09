@@ -1,34 +1,9 @@
 from selenium import webdriver
 from selenium.webdriver.common.by import By
-from selenium.webdriver.chrome.service import Service
-from webdriver_manager.chrome import ChromeDriverManager
-from selenium.webdriver.support.ui import WebDriverWait
-from selenium.webdriver.support import expected_conditions as EC
-import time
-def filter_by_pro_number(url, pro_number):
-    driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()))
-    try:
-        driver.get(url)
-        # Open filter menu
-        WebDriverWait(driver, 10).until(
-            EC.element_to_be_clickable((By.ID, "filterDropdown"))
-        ).click()
-        # Select 'Contains'
-        WebDriverWait(driver, 10).until(
-            EC.element_to_be_clickable((By.XPATH, "//option[text()='Contains']"))
-        ).click()
-        # Enter PRO Number
-        input_field = WebDriverWait(driver, 10).until(
-            EC.presence_of_element_located((By.ID, "proNumberInput"))
-        )
-        input_field.send_keys(pro_number)
-        # Click apply filter
-        WebDriverWait(driver, 10).until(
-            EC.element_to_be_clickable((By.XPATH, "//button[text()='Apply Filter']"))
-        ).click()
-        # Verify results updated
-        assert "Filtered results displayed" in driver.page_source
-    except Exception as e:
-        print(f"Failed to filter by PRO Number: {e}")
-    finally:
-        driver.quit()
+driver = webdriver.Chrome()
+driver.get("login_url")
+driver.find_element(By.ID, "username").send_keys("invalid_user")
+driver.find_element(By.ID, "password").send_keys("wrong_pass")
+driver.find_element(By.ID, "login_button").click()
+assert "Invalid username or password." in driver.page_source
+driver.quit()
