@@ -1,1 +1,16 @@
-\nfrom selenium import webdriver\nfrom selenium.webdriver.common.by import By\nfrom selenium.webdriver.chrome.service import Service\nfrom webdriver_manager.chrome import ChromeDriverManager\n\ndef test_customer_interaction_platform():\n    driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()))\n    try:\n        # Step 1: Navigate to the customer interaction platform.\n        driver.get("http://your_application_url/homepage")\n        assert "Homepage - Your App" in driver.title\n\n        # Step 2: Access the customer interaction platform.\n        interaction_button = driver.find_element(By.ID, "interaction_platform")\n        interaction_button.click()\n        assert driver.find_element(By.ID, "interaction_options").is_displayed()\n        print("Customer interaction platform loads successfully.")\n    finally:\n        driver.quit()\n
+from selenium import webdriver
+from selenium.webdriver.common.by import By
+from selenium.webdriver.chrome.service import Service
+from webdriver_manager.chrome import ChromeDriverManager
+import time
+def test_customer_interaction():
+    driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()))
+    try:
+        driver.get("http://example.com/customer-interaction")
+        assert "Customer Interaction" in driver.title
+        start_btn = driver.find_element(By.ID, "startInteraction")
+        start_btn.click()
+        assert driver.find_element(By.ID, "interactionPanel").is_displayed()
+        print("Customer interaction initiated successfully.")
+    finally:
+        driver.quit()
