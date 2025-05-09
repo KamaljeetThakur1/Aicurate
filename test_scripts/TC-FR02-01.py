@@ -1,1 +1,16 @@
-\nfrom selenium import webdriver\nfrom selenium.webdriver.common.by import By\nfrom selenium.webdriver.chrome.service import Service\nfrom webdriver_manager.chrome import ChromeDriverManager\n\ndef test_needs_assessment_page_load():\n    driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()))\n    try:\n        # Step 1: Navigate to the needs assessment page.\n        driver.get("http://your_application_url/needs_assessment")\n        assert "Needs Assessment - Your App" in driver.title\n\n        # Step 2: Check for available tools.\n        assert driver.find_element(By.ID, "assessment_tools").is_displayed()\n        print("Needs assessment tools are loaded correctly.")\n    finally:\n        driver.quit()\n
+from selenium import webdriver
+from selenium.webdriver.common.by import By
+from selenium.webdriver.chrome.service import Service
+from webdriver_manager.chrome import ChromeDriverManager
+import time
+def test_identify_customer_needs():
+    driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()))
+    try:
+        driver.get("http://example.com/customer-needs")
+        assert "Customer Needs" in driver.title
+        customer_data_input = driver.find_element(By.NAME, "customerData")
+        customer_data_input.send_keys("Need analysis for product X")
+        assert customer_data_input.get_attribute('value') == "Need analysis for product X"
+        print("Customer needs recorded successfully.")
+    finally:
+        driver.quit()
