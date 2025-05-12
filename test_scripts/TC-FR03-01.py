@@ -1,9 +1,1 @@
-from selenium import webdriver
-from selenium.webdriver.common.by import By
-driver = webdriver.Chrome()
-driver.get("login_url")
-driver.find_element(By.ID, "username").send_keys("invalid_user")
-driver.find_element(By.ID, "password").send_keys("wrong_pass")
-driver.find_element(By.ID, "login_button").click()
-assert "Invalid username or password." in driver.page_source
-driver.quit()
+\nfrom selenium import webdriver\nfrom selenium.webdriver.common.by import By\nfrom selenium.webdriver.chrome.service import Service\nfrom webdriver_manager.chrome import ChromeDriverManager\nimport time\n\ndef filter_pro_number():\n    driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()))\n    try:\n        driver.get("https://example.com/dataset")\n        driver.find_element(By.ID, "filter_menu").click()  # Open filter menu\n        driver.find_element(By.XPATH, "//option[text()='Contains']").click()  # Choose 'Contains'\n        driver.find_element(By.ID, "pro_number_input").send_keys("12345")  # Enter PRO Number\n        driver.find_element(By.ID, "apply_filter").click()  # Click to apply filter\n        assert "Filtered Result" in driver.page_source  # Confirm filtered result shows\n    finally:\n        driver.quit()\n
