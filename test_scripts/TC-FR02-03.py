@@ -1,6 +1,1 @@
-from selenium import webdriver
-from selenium.webdriver.common.by import By
-driver = webdriver.Chrome()
-driver.get("chat_interface_url")
-assert "Unauthorized" in driver.page_source
-driver.quit()
+\nfrom selenium import webdriver\nfrom selenium.webdriver.common.by import By\nfrom selenium.webdriver.chrome.service import Service\nfrom webdriver_manager.chrome import ChromeDriverManager\nimport time\n\ndef edge_date_selection():\n    driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()))\n    try:\n        driver.get("https://example.com/data")\n        driver.find_element(By.ID, "start_date").click()  # Open start date picker\n        time.sleep(1)\n        driver.find_element(By.XPATH, "//td[@data-date='2023-12-31']").click()  # Attempt future date\n        assert "Start date cannot be in the future." in driver.page_source  # Validate error message\n    finally:\n        driver.quit()\n
