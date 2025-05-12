@@ -1,10 +1,1 @@
-from selenium import webdriver
-from selenium.webdriver.common.by import By
-driver = webdriver.Chrome()
-driver.get("login_url")
-driver.find_element(By.ID, "username").send_keys("valid_user")
-driver.find_element(By.ID, "password").send_keys("valid_pass")
-driver.find_element(By.ID, "login_button").click()
-driver.find_element(By.ID, "login_button").click()
-assert "Chat Interface" in driver.page_source
-driver.quit()
+\nfrom selenium import webdriver\nfrom selenium.webdriver.common.by import By\nfrom selenium.webdriver.chrome.service import Service\nfrom webdriver_manager.chrome import ChromeDriverManager\nimport time\n\ndef clear_date_filters():\n    driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()))\n    try:\n        driver.get("https://example.com/data")\n        driver.find_element(By.ID, "clear_filters").click()  # Clear filters\n        assert "All Data" in driver.page_source  # Verify all data is visible\n    finally:\n        driver.quit()\n

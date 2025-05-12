@@ -1,9 +1,1 @@
-from selenium import webdriver
-from selenium.webdriver.common.by import By
-driver = webdriver.Chrome()
-driver.get("login_url")
-driver.find_element(By.ID, "username").send_keys("invalid_user")
-driver.find_element(By.ID, "password").send_keys("invalid_pass")
-driver.find_element(By.ID, "login_button").click()
-assert "Invalid username or password." in driver.page_source
-driver.quit()
+\nfrom selenium import webdriver\nfrom selenium.webdriver.common.by import By\nfrom selenium.webdriver.chrome.service import Service\nfrom webdriver_manager.chrome import ChromeDriverManager\nfrom selenium.webdriver.support.ui import WebDriverWait\nfrom selenium.webdriver.support import expected_conditions as EC\nimport time\n\ndef sso_login_invalid():\n    driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()))\n    try:\n        driver.get("https://example.com/login")\n        WebDriverWait(driver, 10).until(\n            EC.element_to_be_clickable((By.XPATH, "//button[contains(text(), 'Login with SSO')]"))\n        ).click()\n        WebDriverWait(driver, 10).until(\n            EC.presence_of_element_located((By.ID, "username"))\n        ).send_keys("invalid_username")\n        driver.find_element(By.ID, "next").click()\n        WebDriverWait(driver, 10).until(\n            EC.presence_of_element_located((By.ID, "password"))\n        ).send_keys("invalid_password")\n        driver.find_element(By.ID, "signIn").click()\n        assert "Invalid credentials" in driver.page_source  # Validate error message\n    finally:\n        driver.quit()\n
