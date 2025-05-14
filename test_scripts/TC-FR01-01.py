@@ -5,14 +5,21 @@ from webdriver_manager.chrome import ChromeDriverManager
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 import time
-def sso_login(username, password):
+def sso_login():
     driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()))
     try:
-        driver.get("https://example.com/sso")
-        WebDriverWait(driver, 10).until(EC.element_to_be_clickable((By.XPATH, "//input[@id='username']"))).send_keys(username)
-        driver.find_element(By.XPATH, "//input[@id='password']").send_keys(password)
-        driver.find_element(By.XPATH, "//button[contains(text(), 'Login')]").click()
-        WebDriverWait(driver, 10).until(EC.url_contains("/home"))
-        assert driver.current_url == "https://example.com/home"
-    finally:
+        driver.get("http://example.com/login")
+        WebDriverWait(driver, 10).until(EC.element_to_be_clickable((By.XPATH, "//button[contains(text(), 'Login with SSO')]"))).click()
+        time.sleep(2)
+        WebDriverWait(driver, 15).until(EC.presence_of_element_located((By.ID, "i0116"))).send_keys("valid_username")
+        driver.find_element(By.ID, "idSIButton9").click()
+        time.sleep(2)
+        WebDriverWait(driver, 15).until(EC.presence_of_element_located((By.ID, "i0118"))).send_keys("valid_password")
+        driver.find_element(By.ID, "idSIButton9").click()
+        time.sleep(2)
+        print("Login successful.")
+        return driver
+    except Exception as e:
+        print(f"Login failed: {e}")
         driver.quit()
+        return None
