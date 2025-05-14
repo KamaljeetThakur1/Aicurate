@@ -1,1 +1,17 @@
-\nfrom selenium import webdriver\nfrom selenium.webdriver.common.by import By\nfrom selenium.webdriver.chrome.service import Service\nfrom webdriver_manager.chrome import ChromeDriverManager\nimport time\n\ndef filter_invalid_pro_number():\n    driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()))\n    try:\n        driver.get("https://example.com/dataset")\n        driver.find_element(By.ID, "filter_menu").click()  # Open filter menu\n        driver.find_element(By.XPATH, "//option[text()='Contains']").click()  # Choose 'Contains'\n        driver.find_element(By.ID, "pro_number_input").send_keys("INVALID")  # Enter invalid PRO Number\n        driver.find_element(By.ID, "apply_filter").click()  # Click to apply filter\n        assert "No results found." in driver.page_source  # Confirm no results message\n    finally:\n        driver.quit()\n
+from selenium import webdriver
+from selenium.webdriver.common.by import By
+from selenium.webdriver.chrome.service import Service
+from webdriver_manager.chrome import ChromeDriverManager
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.support import expected_conditions as EC
+import time
+def filter_invalid_pro_number(pro_number):
+    driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()))
+    try:
+        driver.get("https://example.com/dataset")
+        driver.find_element(By.XPATH, "//input[@id='pro-number']").send_keys(pro_number)
+        driver.find_element(By.XPATH, "//button[contains(text(), 'Filter')]").click()
+        WebDriverWait(driver, 10).until(EC.visibility_of_element_located((By.XPATH, "//div[@class='error-message']"))) 
+        assert "No records found for the given PRO number" in driver.page_source
+    finally:
+        driver.quit()
