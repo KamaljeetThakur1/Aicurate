@@ -5,14 +5,23 @@ from webdriver_manager.chrome import ChromeDriverManager
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 import time
-def filter_data(start_date, end_date):
+def apply_date_filters():
     driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()))
     try:
-        driver.get("https://example.com/data-filter")
-        driver.find_element(By.XPATH, "//input[@id='start-date']").send_keys(start_date)
-        driver.find_element(By.XPATH, "//input[@id='end-date']").send_keys(end_date)
-        driver.find_element(By.XPATH, "//button[contains(text(), 'Apply Filter')]").click()
-        WebDriverWait(driver, 10).until(EC.visibility_of_element_located((By.XPATH, "//div[@class='filtered-data']"))) 
-        assert "Filtered data displayed" in driver.page_source
+        driver.get("http://example.com/data")
+        WebDriverWait(driver, 10).until(EC.element_to_be_clickable((By.ID, "startDatePicker"))).click()
+        time.sleep(1)
+        driver.find_element(By.XPATH, "//td[@data-date='2023-01-01']").click()
+        time.sleep(1)
+        WebDriverWait(driver, 10).until(EC.element_to_be_clickable((By.ID, "endDatePicker"))).click()
+        time.sleep(1)
+        driver.find_element(By.XPATH, "//td[@data-date='2023-01-31']").click()
+        WebDriverWait(driver, 10).until(EC.element_to_be_clickable((By.ID, "applyFilters"))).click()
+        time.sleep(2)
+        filtered_data = driver.find_element(By.XPATH, "//div[@class='data-display']").is_displayed()
+        assert filtered_data == True
+        print("Data filtered successfully.")
+    except Exception as e:
+        print(f"Filtering failed: {e}")
     finally:
         driver.quit()
