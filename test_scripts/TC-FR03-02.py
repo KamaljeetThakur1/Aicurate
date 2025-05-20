@@ -5,19 +5,20 @@ from webdriver_manager.chrome import ChromeDriverManager
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 import time
-def filter_by_invalid_pro_number():
+
+def filter_empty_pro_number():
     driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()))
     try:
-        driver.get("http://example.com/data")
-        WebDriverWait(driver, 10).until(EC.element_to_be_clickable((By.ID, "proFilterMenu"))).click()
-        driver.find_element(By.XPATH, "//option[text()='Contains']").click()
-        driver.find_element(By.ID, "proNumberInput").send_keys("invalidPRO123")
-        WebDriverWait(driver, 10).until(EC.element_to_be_clickable((By.ID, "applyProFilter"))).click()
+        driver.get("https://example.com/data-view")
+        driver.find_element(By.ID, "filter-button").click()
+        time.sleep(1)
+        driver.find_element(By.ID, "filter-criteria").select_by_visible_text('Contains')
+        driver.find_element(By.ID, "apply-filter").click()
         time.sleep(2)
-        no_results_message = driver.find_element(By.XPATH, "//div[@class='no-results']").is_displayed()
-        assert no_results_message == True
-        print("No results found for the invalid PRO Number.")
+        error_message = driver.find_element(By.XPATH, "//div[contains(text(), 'PRO Number cannot be empty')]")
+        assert error_message.is_displayed(), "Error message for empty PRO Number not shown"
+        print("Error displayed correctly for empty input.")
     except Exception as e:
-        print(f"Filtering failed: {e}")
+        print(f"Filter empty pro number test failed: {e}")
     finally:
         driver.quit()
