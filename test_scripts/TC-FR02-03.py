@@ -5,17 +5,13 @@ from webdriver_manager.chrome import ChromeDriverManager
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 import time
-def clear_date_filters():
+def clear_date_filters(url):
     driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()))
     try:
-        driver.get("http://example.com/data")
-        # Assuming filters have been applied already
-        WebDriverWait(driver, 10).until(EC.element_to_be_clickable((By.ID, "clearFilters"))).click()
+        driver.get(url)
+        WebDriverWait(driver, 10).until(EC.visibility_of_element_located((By.ID, 'date-picker')))
+        driver.find_element(By.XPATH, "//button[contains(text(), 'Clear Filters')]").click()
         time.sleep(2)
-        original_data = driver.find_element(By.XPATH, "//div[@class='data-display']").is_displayed()
-        assert original_data == True
-        print("Filters cleared, data reverted successfully.")
-    except Exception as e:
-        print(f"Clearing filters failed: {e}")
+        assert "All data displayed" in driver.page_source, "Data not cleared correctly"
     finally:
         driver.quit()
