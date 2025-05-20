@@ -5,23 +5,23 @@ from webdriver_manager.chrome import ChromeDriverManager
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 import time
-def apply_invalid_date_filters():
+
+def data_filter_invalid_dates(start_date, end_date):
     driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()))
     try:
-        driver.get("http://example.com/data")
-        WebDriverWait(driver, 10).until(EC.element_to_be_clickable((By.ID, "startDatePicker"))).click()
+        driver.get("https://example.com/data-view")
+        driver.find_element(By.ID, "start-date").click()
         time.sleep(1)
-        driver.find_element(By.XPATH, "//td[@data-date='2023-01-31']").click()
+        driver.find_element(By.ID, "start-date-input").send_keys(start_date)
+        driver.find_element(By.ID, "end-date").click()
         time.sleep(1)
-        WebDriverWait(driver, 10).until(EC.element_to_be_clickable((By.ID, "endDatePicker"))).click()
-        time.sleep(1)
-        driver.find_element(By.XPATH, "//td[@data-date='2023-01-01']").click()
-        WebDriverWait(driver, 10).until(EC.element_to_be_clickable((By.ID, "applyFilters"))).click()
+        driver.find_element(By.ID, "end-date-input").send_keys(end_date)
+        driver.find_element(By.ID, "apply-filters").click()
         time.sleep(2)
-        error_message = driver.find_element(By.XPATH, "//div[@class='validation-error']").is_displayed()
-        assert error_message == True
-        print("Validation error displayed for invalid date selection.")
+        error_message = driver.find_element(By.XPATH, "//div[contains(text(), 'End date must be after start date')]")
+        assert error_message.is_displayed(), "Error message for invalid dates not shown"
+        print("Invalid date error displayed correctly.")
     except Exception as e:
-        print(f"Filtering failed: {e}")
+        print(f"Filter validation failed: {e}")
     finally:
         driver.quit()
