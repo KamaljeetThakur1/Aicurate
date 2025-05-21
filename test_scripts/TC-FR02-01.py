@@ -1,27 +1,10 @@
-from selenium import webdriver
-from selenium.webdriver.common.by import By
-from selenium.webdriver.chrome.service import Service
-from webdriver_manager.chrome import ChromeDriverManager
-from selenium.webdriver.support.ui import WebDriverWait
-from selenium.webdriver.support import expected_conditions as EC
-import time
-
-def data_filter_with_dates(start_date, end_date):
+def test_access_chat_interface():
     driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()))
     try:
-        driver.get("https://example.com/data-view")
-        driver.find_element(By.ID, "start-date").click()
-        time.sleep(1)
-        # Assume date selection by entering the date for the sake of example
-        driver.find_element(By.ID, "start-date-input").send_keys(start_date)
-        driver.find_element(By.ID, "end-date").click()
-        time.sleep(1)
-        driver.find_element(By.ID, "end-date-input").send_keys(end_date)
-        driver.find_element(By.ID, "apply-filters").click()
-        time.sleep(2)
-        assert "Filtered data results" in driver.page_source, "Filtered results not displayed"
-        print("Data filtered correctly.")
-    except Exception as e:
-        print(f"Filter test failed: {e}")
+        driver.get("https://maya.com/login")
+        driver.find_element(By.ID, "username").send_keys("validuser")
+        driver.find_element(By.ID, "password").send_keys("validpassword")
+        driver.find_element(By.ID, "loginButton").click()
+        assert driver.find_element(By.ID, "chatInterface").is_displayed()
     finally:
         driver.quit()
