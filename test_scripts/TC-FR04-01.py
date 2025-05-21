@@ -1,9 +1,10 @@
-from selenium import webdriver
-from selenium.webdriver.common.by import By
-driver = webdriver.Chrome()
-driver.get("login_url")
-driver.find_element(By.ID, "username").send_keys("valid_user")
-driver.find_element(By.ID, "password").send_keys("valid_pass")
-driver.find_element(By.ID, "login_button").click()
-assert "Chat Input" in driver.page_source
-driver.quit()
+def test_chat_window_load_after_login():
+    driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()))
+    try:
+        driver.get("https://maya.com/login")
+        driver.find_element(By.ID, "username").send_keys("validuser")
+        driver.find_element(By.ID, "password").send_keys("validpassword")
+        driver.find_element(By.ID, "loginButton").click()
+        assert driver.find_element(By.ID, "chatWindow").is_displayed()
+    finally:
+        driver.quit()
