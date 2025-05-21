@@ -1,21 +1,11 @@
-from selenium import webdriver
-from selenium.webdriver.common.by import By
-from selenium.webdriver.chrome.service import Service
-from webdriver_manager.chrome import ChromeDriverManager
-from selenium.webdriver.support.ui import WebDriverWait
-from selenium.webdriver.support import expected_conditions as EC
-import time
-
-def clear_filters():
+def test_chat_interface_readiness_post_wait():
     driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()))
     try:
-        driver.get("https://example.com/data-view")
-        # Assume filters were previously applied
-        driver.find_element(By.ID, "clear-filters").click()
-        time.sleep(2)
-        assert "All records" in driver.page_source, "Data records not reset to original state"
-        print("Filters cleared successfully.")
-    except Exception as e:
-        print(f"Filter clear test failed: {e}")
+        driver.get("https://maya.com/login")
+        driver.find_element(By.ID, "username").send_keys("validuser")
+        driver.find_element(By.ID, "password").send_keys("validpassword")
+        driver.find_element(By.ID, "loginButton").click()
+        time.sleep(30)
+        assert driver.find_element(By.ID, "chatInterface").is_displayed()
     finally:
         driver.quit()
