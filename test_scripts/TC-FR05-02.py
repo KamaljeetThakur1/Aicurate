@@ -1,8 +1,10 @@
+
+# Sample automation script for data mismatch
 from selenium import webdriver
 from selenium.webdriver.common.by import By
+import time
 driver = webdriver.Chrome()
-driver.get("chat_interface_url")
-driver.find_element(By.ID, "chat_input").send_keys("What is the policy regarding late fee waived?")
-driver.find_element(By.ID, "send_button").click()
-assert "Late fee policy details" in driver.page_source
+driver.get('http://webapp.com/inventory')
+time.sleep(2)
+assert 'Data mismatch' in driver.page_source
 driver.quit()

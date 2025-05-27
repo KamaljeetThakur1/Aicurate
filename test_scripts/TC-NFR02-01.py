@@ -1,8 +1,11 @@
+
+# Sample automation script for dashboard layout
 from selenium import webdriver
 from selenium.webdriver.common.by import By
+import time
 driver = webdriver.Chrome()
-driver.get("chat_interface_url")
-driver.find_element(By.ID, "chat_input").send_keys("#$^%123")
-driver.find_element(By.ID, "send_button").click()
-assert not "Unhandled exception" in driver.page_source
+driver.get('http://webapp.com/dashboard')
+time.sleep(2)
+assert 'Dashboard' in driver.title
+assert driver.find_element(By.ID, 'monthlyReports').is_displayed()
 driver.quit()

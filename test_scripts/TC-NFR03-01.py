@@ -1,8 +1,11 @@
+
+# Sample automation script for real-time visibility
 from selenium import webdriver
 from selenium.webdriver.common.by import By
+import time
 driver = webdriver.Chrome()
-driver.get("chat_interface_url")
-driver.find_element(By.ID, "chat_input").send_keys("What is the coverage detail?")
-driver.find_element(By.ID, "send_button").click()
-assert "Coverage details are as follows:" in driver.page_source
+driver.get('http://webapp.com/shipping-status')
+time.sleep(2)
+assert 'Shipping Status' in driver.page_source
+# Assume change happens in the backend
 driver.quit()
