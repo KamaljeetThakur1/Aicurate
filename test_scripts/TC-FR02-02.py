@@ -1,10 +1,1 @@
-
-# Sample automation script to test error handling
-from selenium import webdriver
-from selenium.webdriver.common.by import By
-import time
-driver = webdriver.Chrome()
-driver.get('http://webapp.com/shipping-status')
-time.sleep(2)
-assert 'Error fetching details' in driver.page_source
-driver.quit()
+\nfrom selenium import webdriver\nfrom selenium.webdriver.common.by import By\nfrom selenium.webdriver.chrome.service import Service\nfrom webdriver_manager.chrome import ChromeDriverManager\nfrom selenium.webdriver.support.ui import WebDriverWait\nfrom selenium.webdriver.support import expected_conditions as EC\nimport time\n\ndef filter_data_by_invalid_date(url, start_date, end_date):\n    driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()))\n    try:\n        driver.get(url)\n        driver.find_element(By.ID, "start-date").send_keys(start_date)\n        driver.find_element(By.ID, "end-date").send_keys(end_date)\n        driver.find_element(By.ID, "apply-filters").click()\n        error_message = driver.find_element(By.CLASS_NAME, "error-message").text\n        assert "Invalid date format" in error_message\n        print("Error handling works for invalid date.")\n    except Exception as e:\n        print(f"Error during test: {e}")\n    finally:\n        driver.quit()\n
