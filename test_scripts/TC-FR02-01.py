@@ -1,10 +1,1 @@
-
-# Sample automation script to test FedEx integration
-from selenium import webdriver
-from selenium.webdriver.common.by import By
-import time
-driver = webdriver.Chrome()
-driver.get('http://webapp.com/shipping-status')
-time.sleep(2)
-assert 'Shipping Status' in driver.title
-driver.quit()
+\nfrom selenium import webdriver\nfrom selenium.webdriver.common.by import By\nfrom selenium.webdriver.chrome.service import Service\nfrom webdriver_manager.chrome import ChromeDriverManager\nfrom selenium.webdriver.support.ui import WebDriverWait\nfrom selenium.webdriver.support import expected_conditions as EC\nimport time\n\ndef filter_data_by_date(url, start_date, end_date):\n    driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()))\n    try:\n        driver.get(url)\n        WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.ID, "start-date"))).send_keys(start_date)\n        driver.find_element(By.ID, "end-date").send_keys(end_date)\n        driver.find_element(By.ID, "apply-filters").click()\n        # Check for data update to the filtered date range\n        data_updated = driver.find_element(By.CSS_SELECTOR, ".data-updated-message").is_displayed()\n        assert data_updated\n        print("Data filtered successfully.")\n    except Exception as e:\n        print(f"Error during test: {e}")\n    finally:\n        driver.quit()\n
