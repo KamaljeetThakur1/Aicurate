@@ -1,12 +1,1 @@
-
-# Sample automation script for successful code scan
-from selenium import webdriver
-from selenium.webdriver.common.by import By
-import time
-driver = webdriver.Chrome()
-driver.get('http://webapp.com/scan')
-time.sleep(2)
-driver.find_element(By.ID, 'scanner').send_keys('Shipment123')
-driver.find_element(By.ID, 'scanButton').click()
-assert 'Scan successful' in driver.page_source
-driver.quit()
+\nfrom selenium import webdriver\nfrom selenium.webdriver.common.by import By\nfrom selenium.webdriver.chrome.service import Service\nfrom webdriver_manager.chrome import ChromeDriverManager\nfrom selenium.webdriver.support.ui import WebDriverWait\nfrom selenium.webdriver.support import expected_conditions as EC\nimport time\n\ndef filter_table_by_pro_number(url, pro_number):\n    driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()))\n    try:\n        driver.get(url)\n        driver.find_element(By.ID, "filter-button").click()\n        driver.find_element(By.XPATH, "//option[contains(text(),'Contains')]").click()\n        driver.find_element(By.ID, "pro-number-input").send_keys(pro_number)\n        driver.find_element(By.ID, "apply-filter").click()\n        results_displayed = driver.find_element(By.CLASS_NAME, "filter-results").is_displayed()\n        assert results_displayed\n        print("Table filtered correctly by PRO number.")\n    except Exception as e:\n        print(f"Error during test: {e}")\n    finally:\n        driver.quit()\n
