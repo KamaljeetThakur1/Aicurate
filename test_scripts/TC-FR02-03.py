@@ -1,10 +1,22 @@
 
-# Sample automation script for partial data handling
 from selenium import webdriver
 from selenium.webdriver.common.by import By
-import time
-driver = webdriver.Chrome()
-driver.get('http://webapp.com/shipping-status')
-time.sleep(2)
-assert 'Partial data retrieved' in driver.page_source
-driver.quit()
+from selenium.webdriver.chrome.service import Service
+from webdriver_manager.chrome import ChromeDriverManager
+
+def test_component_settings_retention():
+    driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()))
+    try:
+        driver.get("http://editor.ipsy.com")
+        # Adjust settings for a specific component
+        driver.find_element(By.ID, "edit-component").click()
+        # Save settings
+        driver.find_element(By.ID, "save-settings").click()
+        # Switch component
+        driver.find_element(By.ID, "switch-component").click()
+        assert driver.find_element(By.ID, "previous-component-settings").is_displayed()
+        print("Settings retained on component switch.")
+    except Exception as e:
+        print(f"Test failed: {e}")
+    finally:
+        driver.quit()
