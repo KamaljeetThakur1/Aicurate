@@ -1,10 +1,21 @@
 
-# Sample automation script to test FedEx integration
 from selenium import webdriver
 from selenium.webdriver.common.by import By
-import time
-driver = webdriver.Chrome()
-driver.get('http://webapp.com/shipping-status')
-time.sleep(2)
-assert 'Shipping Status' in driver.title
-driver.quit()
+from selenium.webdriver.chrome.service import Service
+from webdriver_manager.chrome import ChromeDriverManager
+
+def test_content_modularity():
+    driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()))
+    try:
+        driver.get("http://editor.ipsy.com")
+        # Simulate adding a content module
+        driver.find_element(By.ID, "add-module").click()
+        assert driver.find_element(By.CLASS_NAME, "content-module").is_displayed()
+        # Simulate removing a content module
+        driver.find_element(By.CLASS_NAME, "remove-module").click()
+        assert driver.find_elements(By.CLASS_NAME, "content-module") == []
+        print("Content can be added and removed from the homepage.")
+    except Exception as e:
+        print(f"Test failed: {e}")
+    finally:
+        driver.quit()
