@@ -1,12 +1,19 @@
 
-# Sample automation script for invalid code scan
 from selenium import webdriver
 from selenium.webdriver.common.by import By
-import time
-driver = webdriver.Chrome()
-driver.get('http://webapp.com/scan')
-time.sleep(2)
-driver.find_element(By.ID, 'scanner').send_keys('InvalidCode')
-driver.find_element(By.ID, 'scanButton').click()
-assert 'Invalid scan' in driver.page_source
-driver.quit()
+from selenium.webdriver.chrome.service import Service
+from webdriver_manager.chrome import ChromeDriverManager
+
+def test_ab_testing_activation_failure():
+    driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()))
+    try:
+        driver.get("http://admin.ipsy.com")
+        # Attempt to activate A/B testing without necessary permissions
+        driver.find_element(By.ID, "ab-testing-settings").click()
+        driver.find_element(By.ID, "toggle-ab-testing").click()
+        assert "Access Denied" in driver.page_source
+        print("Error message displayed when trying to enable A/B testing without permissions.")
+    except Exception as e:
+        print(f"Test failed: {e}")
+    finally:
+        driver.quit()
