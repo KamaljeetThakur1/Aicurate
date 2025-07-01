@@ -1,12 +1,13 @@
 
-# Sample automation script for successful code scan
-from selenium import webdriver
-from selenium.webdriver.common.by import By
-import time
-driver = webdriver.Chrome()
-driver.get('http://webapp.com/scan')
-time.sleep(2)
-driver.find_element(By.ID, 'scanner').send_keys('Shipment123')
-driver.find_element(By.ID, 'scanButton').click()
-assert 'Scan successful' in driver.page_source
-driver.quit()
+def filter_by_pro_number():
+   driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()))
+   try:
+       driver.get("https://your-application-url.com/dataset")
+       driver.find_element(By.ID, "filterMenu").click()
+       driver.find_element(By.ID, "containsCriteria").click()
+       driver.find_element(By.ID, "proNumberInput").send_keys("12345")
+       driver.find_element(By.ID, "applyFilter").click()
+       time.sleep(2)
+       assert "Filtered Results" in driver.page_source
+   finally:
+       driver.quit()
