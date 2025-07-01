@@ -1,1 +1,17 @@
-\nfrom selenium import webdriver\nfrom selenium.webdriver.common.by import By\nfrom selenium.webdriver.chrome.service import Service\nfrom webdriver_manager.chrome import ChromeDriverManager\nimport time\n\ndef test_max_length_input():\n    driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()))\n    try:\n        driver.get('http://customer-platform-url.com')\n        assert 'Homepage Title' in driver.title\n        driver.find_element(By.LINK_TEXT, 'Inquiry').click()\n        time.sleep(2)\n        max_input = 'A' * 1000  # Assuming max length is 1000 characters\n        driver.find_element(By.NAME, 'details').send_keys(max_input)\n        driver.find_element(By.NAME, 'submit').click()\n        time.sleep(2)\n        confirmation_message = driver.find_element(By.ID, 'confirmation').text\n        assert confirmation_message == 'Your inquiry has been submitted.'\n        print('Inquiry submitted successfully with maximum length input.')\n    finally:\n        driver.quit()\n
+
+def persistent_login_choice():
+   driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()))
+   try:
+       driver.get("https://your-application-url.com/login")
+       driver.find_element(By.XPATH, "//button[contains(text(), 'Login with SSO')]").click()
+       time.sleep(2)
+       driver.find_element(By.ID, "i0116").send_keys("testuser")
+       driver.find_element(By.ID, "idSIButton9").click()
+       time.sleep(2)
+       driver.find_element(By.ID, "i0118").send_keys("testpassword")
+       driver.find_element(By.ID, "idSIButton9").click()
+       time.sleep(2)
+       driver.find_element(By.XPATH, "//input[@value='Yes']").click()
+       assert "Dashboard" in driver.title
+   finally:
+       driver.quit()

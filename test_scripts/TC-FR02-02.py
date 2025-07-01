@@ -1,1 +1,12 @@
-\nfrom selenium import webdriver\nfrom selenium.webdriver.common.by import By\nfrom selenium.webdriver.chrome.service import Service\nfrom webdriver_manager.chrome import ChromeDriverManager\nimport time\n\ndef test_non_existent_customer():\n    driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()))\n    try:\n        driver.get('http://needs-identification-url.com')\n        assert 'Tool Title' in driver.title\n        driver.find_element(By.NAME, 'customer_name').send_keys('Non Existent Customer')\n        driver.find_element(By.NAME, 'submit').click()\n        time.sleep(2)\n        error_message = driver.find_element(By.ID, 'error').text\n        assert error_message == 'Customer not found.'\n        print('Error message displayed for non-existent customer.')\n    finally:\n        driver.quit()\n
+
+def invalid_date_filter():
+   driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()))
+   try:
+       driver.get("https://your-application-url.com/data")
+       driver.find_element(By.ID, "startDate").send_keys("2023-02-01")
+       driver.find_element(By.ID, "endDate").send_keys("2023-01-31")
+       driver.find_element(By.ID, "applyFilter").click()
+       time.sleep(2)
+       assert "Invalid date range" in driver.page_source
+   finally:
+       driver.quit()

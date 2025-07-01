@@ -1,10 +1,12 @@
 
-# Sample automation script for partial data handling
-from selenium import webdriver
-from selenium.webdriver.common.by import By
-import time
-driver = webdriver.Chrome()
-driver.get('http://webapp.com/shipping-status')
-time.sleep(2)
-assert 'Partial data retrieved' in driver.page_source
-driver.quit()
+def clear_date_filter():
+   driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()))
+   try:
+       driver.get("https://your-application-url.com/data")
+       driver.find_element(By.ID, "startDate").send_keys("2023-01-01")
+       driver.find_element(By.ID, "endDate").send_keys("2023-01-31")
+       driver.find_element(By.ID, "clearFilter").click()
+       time.sleep(2)
+       assert "Original Data" in driver.page_source
+   finally:
+       driver.quit()
