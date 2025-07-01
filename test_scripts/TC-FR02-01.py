@@ -1,10 +1,1 @@
-
-# Sample automation script to test FedEx integration
-from selenium import webdriver
-from selenium.webdriver.common.by import By
-import time
-driver = webdriver.Chrome()
-driver.get('http://webapp.com/shipping-status')
-time.sleep(2)
-assert 'Shipping Status' in driver.title
-driver.quit()
+\nfrom selenium import webdriver\nfrom selenium.webdriver.common.by import By\nfrom selenium.webdriver.chrome.service import Service\nfrom webdriver_manager.chrome import ChromeDriverManager\nimport time\n\ndef test_needs_identification():\n    driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()))\n    try:\n        driver.get('http://needs-identification-url.com')\n        assert 'Tool Title' in driver.title\n        driver.find_element(By.NAME, 'customer_name').send_keys('Test Customer')\n        driver.find_element(By.NAME, 'customer_needs').send_keys('Feedback')\n        driver.find_element(By.NAME, 'submit').click()\n        time.sleep(2)\n        assert driver.find_element(By.ID, 'needs-results').is_displayed()\n        print('Customer needs identified successfully.')\n    finally:\n        driver.quit()\n

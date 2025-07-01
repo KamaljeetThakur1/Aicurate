@@ -1,2 +1,1 @@
-
-print("No automation needed for documentation review.")
+\nfrom selenium import webdriver\nfrom selenium.webdriver.common.by import By\nfrom selenium.webdriver.chrome.service import Service\nfrom webdriver_manager.chrome import ChromeDriverManager\nimport time\n\ndef test_interaction_platform():\n    driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()))\n    try:\n        driver.get('http://customer-platform-url.com')\n        assert 'Homepage Title' in driver.title\n        driver.find_element(By.LINK_TEXT, 'Contact Us').click()\n        time.sleep(2)\n        assert driver.current_url == 'http://customer-platform-url.com/contact'\n        print('Platform loaded and Contact Us section displayed.')\n    finally:\n        driver.quit()\n
