@@ -1,1 +1,16 @@
-\nfrom selenium import webdriver\nfrom selenium.webdriver.common.by import By\nfrom selenium.webdriver.chrome.service import Service\nfrom webdriver_manager.chrome import ChromeDriverManager\nimport time\n\ndef test_invalid_input():\n    driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()))\n    try:\n        driver.get('http://customer-platform-url.com')\n        assert 'Homepage Title' in driver.title\n        driver.find_element(By.LINK_TEXT, 'Inquiry').click()\n        time.sleep(2)\n        driver.find_element(By.NAME, 'details').send_keys('')  # Invalid input\n        driver.find_element(By.NAME, 'submit').click()\n        time.sleep(2)\n        error_message = driver.find_element(By.ID, 'error').text\n        assert error_message == 'Please provide valid details.'\n        print('Error message displayed for invalid input.')\n    finally:\n        driver.quit()\n
+
+def unsuccessful_sso_login():
+   driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()))
+   try:
+       driver.get("https://your-application-url.com/login")
+       driver.find_element(By.XPATH, "//button[contains(text(), 'Login with SSO')]").click()
+       time.sleep(2)
+       driver.find_element(By.ID, "i0116").send_keys("invaliduser")
+       driver.find_element(By.ID, "idSIButton9").click()
+       time.sleep(2)
+       driver.find_element(By.ID, "i0118").send_keys("invalidpassword")
+       driver.find_element(By.ID, "idSIButton9").click()
+       time.sleep(2)
+       assert "Invalid" in driver.page_source
+   finally:
+       driver.quit()
