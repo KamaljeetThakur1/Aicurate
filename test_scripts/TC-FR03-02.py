@@ -1,12 +1,24 @@
 
-# Sample automation script for invalid code scan
 from selenium import webdriver
 from selenium.webdriver.common.by import By
+from selenium.webdriver.chrome.service import Service
+from webdriver_manager.chrome import ChromeDriverManager
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.support import expected_conditions as EC
 import time
-driver = webdriver.Chrome()
-driver.get('http://webapp.com/scan')
-time.sleep(2)
-driver.find_element(By.ID, 'scanner').send_keys('InvalidCode')
-driver.find_element(By.ID, 'scanButton').click()
-assert 'Invalid scan' in driver.page_source
-driver.quit()
+def filter_by_invalid_pro_number():
+    driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()))
+    try:
+        driver.get('https://example.com/dataset')
+        WebDriverWait(driver, 10).until(EC.element_to_be_clickable((By.ID, "filterButton"))).click()
+        WebDriverWait(driver, 10).until(EC.element_to_be_clickable((By.ID, "criteria"))).select_by_visible_text('Contains')
+        driver.find_element(By.ID, "proNumberInput").send_keys('INVALIDPRO')
+        driver.find_element(By.ID, "applyFilter").click()
+        error_message = WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.CLASS_NAME, "error")))
+        assert 'No data found' in error_message.text
+        print("Correctly showed no data for invalid PRO Number.")
+    except Exception as e:
+        print(f"Filtering failed: {e}")
+    finally:
+        driver.quit()
+filter_by_invalid_pro_number()
