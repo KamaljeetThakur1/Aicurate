@@ -1,1 +1,26 @@
-\nfrom selenium import webdriver\nfrom selenium.webdriver.common.by import By\nfrom selenium.webdriver.chrome.service import Service\nfrom webdriver_manager.chrome import ChromeDriverManager\nimport time\n\ndef test_max_length_input():\n    driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()))\n    try:\n        driver.get('http://customer-platform-url.com')\n        assert 'Homepage Title' in driver.title\n        driver.find_element(By.LINK_TEXT, 'Inquiry').click()\n        time.sleep(2)\n        max_input = 'A' * 1000  # Assuming max length is 1000 characters\n        driver.find_element(By.NAME, 'details').send_keys(max_input)\n        driver.find_element(By.NAME, 'submit').click()\n        time.sleep(2)\n        confirmation_message = driver.find_element(By.ID, 'confirmation').text\n        assert confirmation_message == 'Your inquiry has been submitted.'\n        print('Inquiry submitted successfully with maximum length input.')\n    finally:\n        driver.quit()\n
+
+from selenium import webdriver
+from selenium.webdriver.common.by import By
+from selenium.webdriver.chrome.service import Service
+from webdriver_manager.chrome import ChromeDriverManager
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.support import expected_conditions as EC
+import time
+def sso_login_edge():
+    driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()))
+    try:
+        driver.get('https://example.com/login')
+        WebDriverWait(driver, 10).until(EC.element_to_be_clickable((By.XPATH, "//button[contains(text(), 'Login with SSO')]"))).click()
+        driver.find_element(By.ID, "signIn").click()
+        error_message_user = WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.CLASS_NAME, "error")))
+        assert 'Username required' in error_message_user.text
+        driver.find_element(By.ID, "username").send_keys('testUser')
+        driver.find_element(By.ID, "signIn").click()
+        error_message_pass = WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.CLASS_NAME, "error")))
+        assert 'Password required' in error_message_pass.text
+        print("Edge case handled correctly.")
+    except Exception as e:
+        print(f"Test failed: {e}")
+    finally:
+        driver.quit()
+sso_login_edge()

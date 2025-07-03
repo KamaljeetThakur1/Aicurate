@@ -1,1 +1,23 @@
-\nfrom selenium import webdriver\nfrom selenium.webdriver.common.by import By\nfrom selenium.webdriver.chrome.service import Service\nfrom webdriver_manager.chrome import ChromeDriverManager\nimport time\n\ndef test_needs_identification():\n    driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()))\n    try:\n        driver.get('http://needs-identification-url.com')\n        assert 'Tool Title' in driver.title\n        driver.find_element(By.NAME, 'customer_name').send_keys('Test Customer')\n        driver.find_element(By.NAME, 'customer_needs').send_keys('Feedback')\n        driver.find_element(By.NAME, 'submit').click()\n        time.sleep(2)\n        assert driver.find_element(By.ID, 'needs-results').is_displayed()\n        print('Customer needs identified successfully.')\n    finally:\n        driver.quit()\n
+
+from selenium import webdriver
+from selenium.webdriver.common.by import By
+from selenium.webdriver.chrome.service import Service
+from webdriver_manager.chrome import ChromeDriverManager
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.support import expected_conditions as EC
+import time
+def filter_data_by_date():
+    driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()))
+    try:
+        driver.get('https://example.com/data')
+        assert 'Data' in driver.title
+        WebDriverWait(driver, 10).until(EC.element_to_be_clickable((By.ID, "startDate"))).send_keys('2023-01-01')
+        WebDriverWait(driver, 10).until(EC.element_to_be_clickable((By.ID, "endDate"))).send_keys('2023-01-31')
+        driver.find_element(By.ID, "applyFilters").click()
+        WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.CLASS_NAME, "filteredResults")))
+        print("Data filtered successfully.")
+    except Exception as e:
+        print(f"Filtering failed: {e}")
+    finally:
+        driver.quit()
+filter_data_by_date()
