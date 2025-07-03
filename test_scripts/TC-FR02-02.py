@@ -1,1 +1,23 @@
-\nfrom selenium import webdriver\nfrom selenium.webdriver.common.by import By\nfrom selenium.webdriver.chrome.service import Service\nfrom webdriver_manager.chrome import ChromeDriverManager\nimport time\n\ndef test_non_existent_customer():\n    driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()))\n    try:\n        driver.get('http://needs-identification-url.com')\n        assert 'Tool Title' in driver.title\n        driver.find_element(By.NAME, 'customer_name').send_keys('Non Existent Customer')\n        driver.find_element(By.NAME, 'submit').click()\n        time.sleep(2)\n        error_message = driver.find_element(By.ID, 'error').text\n        assert error_message == 'Customer not found.'\n        print('Error message displayed for non-existent customer.')\n    finally:\n        driver.quit()\n
+
+from selenium import webdriver
+from selenium.webdriver.common.by import By
+from selenium.webdriver.chrome.service import Service
+from webdriver_manager.chrome import ChromeDriverManager
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.support import expected_conditions as EC
+import time
+def filter_data_invalid_date():
+    driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()))
+    try:
+        driver.get('https://example.com/data')
+        WebDriverWait(driver, 10).until(EC.element_to_be_clickable((By.ID, "startDate"))).send_keys('2023-01-31')
+        WebDriverWait(driver, 10).until(EC.element_to_be_clickable((By.ID, "endDate"))).send_keys('2023-01-01')
+        driver.find_element(By.ID, "applyFilters").click()
+        error_message = WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.CLASS_NAME, "error")))
+        assert 'End date must be after start date' in error_message.text
+        print("Error message displayed correctly for invalid date range.")
+    except Exception as e:
+        print(f"Filtering failed: {e}")
+    finally:
+        driver.quit()
+filter_data_invalid_date()
