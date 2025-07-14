@@ -6,20 +6,17 @@ from webdriver_manager.chrome import ChromeDriverManager
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 import time
-def sso_login():
+def test_sso_login():
     driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()))
     try:
-        driver.get('https://example.com/login')
-        assert 'Login' in driver.title
+        driver.get('URL_OF_LOGIN_PAGE')
         WebDriverWait(driver, 10).until(EC.element_to_be_clickable((By.XPATH, "//button[contains(text(), 'Login with SSO')]"))).click()
-        WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.ID, "username"))).send_keys('testuser')
-        driver.find_element(By.ID, "next").click()
-        WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.ID, "password"))).send_keys('password123')
-        driver.find_element(By.ID, "signIn").click()
-        WebDriverWait(driver, 10).until(EC.url_contains('home'))
-        print("Login successful.")
-    except Exception as e:
-        print(f"Login failed: {e}")
+        time.sleep(2)
+        WebDriverWait(driver, 15).until(EC.presence_of_element_located((By.ID, "username_field_id"))).send_keys('testuser')
+        driver.find_element(By.ID, "password_field_id").send_keys('Pass123!')
+        driver.find_element(By.XPATH, "//button[contains(text(), 'Login')]").click()
+        time.sleep(2)
+        assert 'Expected Main Page' in driver.title
+        print("SSO Login successful.")
     finally:
         driver.quit()
-sso_login()
