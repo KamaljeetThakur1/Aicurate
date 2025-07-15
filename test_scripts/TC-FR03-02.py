@@ -3,22 +3,20 @@ from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.chrome.service import Service
 from webdriver_manager.chrome import ChromeDriverManager
-from selenium.webdriver.support.ui import WebDriverWait
-from selenium.webdriver.support import expected_conditions as EC
 import time
-def filter_by_invalid_pro_number():
+
+def filter_by_non_existent_pro(url, pro_number):
     driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()))
     try:
-        driver.get('https://example.com/dataset')
-        WebDriverWait(driver, 10).until(EC.element_to_be_clickable((By.ID, "filterButton"))).click()
-        WebDriverWait(driver, 10).until(EC.element_to_be_clickable((By.ID, "criteria"))).select_by_visible_text('Contains')
-        driver.find_element(By.ID, "proNumberInput").send_keys('INVALIDPRO')
-        driver.find_element(By.ID, "applyFilter").click()
-        error_message = WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.CLASS_NAME, "error")))
-        assert 'No data found' in error_message.text
-        print("Correctly showed no data for invalid PRO Number.")
+        driver.get(url)
+        driver.find_element(By.ID, "filter_menu").click()
+        driver.find_element(By.ID, "filter_criteria").send_keys("Contains")
+        driver.find_element(By.ID, "pro_number_input").send_keys(pro_number)
+        driver.find_element(By.ID, "apply_filter").click()
+        time.sleep(2)
+        assert "No results found" in driver.page_source
+        print("Correct message displayed for non-existent PRO Number.")
     except Exception as e:
-        print(f"Filtering failed: {e}")
+        print(f"Filtering for non-existent PRO Number failed due to: {e}")
     finally:
         driver.quit()
-filter_by_invalid_pro_number()
