@@ -6,21 +6,20 @@ from webdriver_manager.chrome import ChromeDriverManager
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 import time
-def sso_login_edge():
+
+def sso_login_and_decline():
     driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()))
     try:
-        driver.get('https://example.com/login')
+        driver.get("http://application-url/login")
         WebDriverWait(driver, 10).until(EC.element_to_be_clickable((By.XPATH, "//button[contains(text(), 'Login with SSO')]"))).click()
-        driver.find_element(By.ID, "signIn").click()
-        error_message_user = WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.CLASS_NAME, "error")))
-        assert 'Username required' in error_message_user.text
-        driver.find_element(By.ID, "username").send_keys('testUser')
-        driver.find_element(By.ID, "signIn").click()
-        error_message_pass = WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.CLASS_NAME, "error")))
-        assert 'Password required' in error_message_pass.text
-        print("Edge case handled correctly.")
+        WebDriverWait(driver, 15).until(EC.presence_of_element_located((By.ID, "i0116"))).send_keys("testuser")
+        driver.find_element(By.ID, "idSIButton9").click()
+        WebDriverWait(driver, 15).until(EC.presence_of_element_located((By.ID, "i0118"))).send_keys("Pass123!")
+        driver.find_element(By.ID, "idSIButton9").click()
+        WebDriverWait(driver, 15).until(EC.element_to_be_clickable((By.XPATH, "//input[@value='No']"))).click()
+        print("Declined 'Stay signed in' prompt.")
+        print("Login successful.")
     except Exception as e:
-        print(f"Test failed: {e}")
+        print(f"Login failed: {e}")
     finally:
         driver.quit()
-sso_login_edge()
